@@ -159,6 +159,7 @@ void print_map(int *map, int n, int m)
 int main()
 {
     int *map;
+
     int step = 0;
     int x = 1;
     int y = 1;
