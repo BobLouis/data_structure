@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <math.h>
 typedef struct polyNode
 {
     int coef;
@@ -200,6 +201,33 @@ void write_node(polyNode *a)
     printf("\n");
 }
 
+void erase(polyNode *a)
+{
+    polyNode *ptr = a->link;
+    polyNode *prev;
+    while (ptr != a)
+    {
+        prev = ptr;
+        ptr = ptr->link;
+        printf("deleting %d %d\n", prev->coef, prev->expon);
+        free(prev);
+    }
+    printf("deleting %d %d\n", a->coef, a->expon);
+    free(a);
+}
+
+float eval(polyNode *a, float x)
+{
+    float answer = 0;
+    polyNode *ptr;
+    ptr = a;
+    ptr = ptr->link;
+    for (; ptr != a; ptr = ptr->link)
+    {
+        answer += pow(x, ptr->expon) * ptr->coef;
+    }
+    return answer;
+}
 int main()
 {
     polyNode *a, *b, *c, *ptr;
@@ -226,5 +254,7 @@ int main()
     c = cpmult(a, b);
     printf("node c after mul\n");
     write_node(c);
+    // erase(c);
+    printf("%f", eval(c, 2.5));
     return 0;
 }
