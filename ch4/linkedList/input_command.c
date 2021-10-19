@@ -1,6 +1,8 @@
 #include <stdio.h>
+#include <string.h>
 #include <stdlib.h>
 #include <math.h>
+
 typedef struct polyNode
 {
     int coef;
@@ -17,9 +19,8 @@ polyNode *new_node(int coef, int expon)
     return temp;
 }
 
-void read_node(polyNode *a, polyNode *b, int a_arr[], int b_arr[], int size_a, int size_b)
+void read_node(polyNode *a, int a_arr[], int size_a)
 {
-
     polyNode *ptr;
     ptr = a;
     for (int i = 0; i < size_a; i += 2)
@@ -28,13 +29,6 @@ void read_node(polyNode *a, polyNode *b, int a_arr[], int b_arr[], int size_a, i
         ptr = ptr->link;
     }
     ptr->link = a;
-    ptr = b;
-    for (int i = 0; i < size_b; i += 2)
-    {
-        ptr->link = new_node(b_arr[i], b_arr[i + 1]);
-        ptr = ptr->link;
-    }
-    ptr->link = b;
 }
 
 void print_node(polyNode *a)
@@ -209,10 +203,10 @@ void erase(polyNode *a)
     {
         prev = ptr;
         ptr = ptr->link;
-        printf("deleting %d %d\n", prev->coef, prev->expon);
+        // printf("deleting %d %d\n", prev->coef, prev->expon);
         free(prev);
     }
-    printf("deleting %d %d\n", a->coef, a->expon);
+    // printf("deleting %d %d\n", a->coef, a->expon);
     free(a);
 }
 
@@ -234,31 +228,165 @@ float eval(polyNode *a, float x)
 
 int main()
 {
-    polyNode *a, *b, *c, *ptr;
-    a = new_node(-1, -1);
-    b = new_node(-1, -1);
+    int num, data, num_data, name_count = 0;
+    char command[7];
+    char input_name[50];
+    char name[10][50];
+    int *name_arr[10];
+    polyNode *node[10];
+    int node_size[10];
+    scanf("%d", &num);
+    for (int i = 0; i < num; ++i)
+    {
+        scanf("%6s", command);
+        if (strcmp(command, "pread") == 0)
+        { // push command, call push()
+            scanf("%49s", name[name_count]);
+            scanf("%d", &num_data);
+            node_size[name_count] = num_data * 2;
+            name_arr[name_count] = malloc(num_data * 2 * sizeof(int));
+            for (int i = 0; i < num_data * 2; i += 2)
+            {
+                scanf("%d", &name_arr[name_count][i]);
+                scanf("%d", &name_arr[name_count][i + 1]);
+            }
+            node[name_count] = new_node(-1, -1);
+            read_node(node[name_count], name_arr[name_count], node_size[name_count]);
+            printf("ok\n");
+            ++name_count;
+        }
+        else if (strcmp(command, "pwrite") == 0)
+        {
+            scanf("%49s", input_name);
+            for (int i = 0; i < name_count; ++i)
+            {
+                if (strcmp(name[i], input_name) == 0)
+                {
+                    write_node(node[i]);
+                    break;
+                }
+            }
+        }
+        else if (strcmp(command, "padd") == 0)
+        {
+            scanf("%49s", name[name_count]);
+            int operand1, operand2;
+            scanf("%49s", input_name);
+            for (int i = 0; i < name_count; ++i)
+            {
+                if (strcmp(name[i], input_name) == 0)
+                {
+                    operand1 = i;
+                    break;
+                }
+            }
+            scanf("%49s", input_name);
+            for (int i = 0; i < name_count; ++i)
+            {
+                if (strcmp(name[i], input_name) == 0)
+                {
+                    operand2 = i;
+                    break;
+                }
+            }
 
-    int a_arr[] = {2, 2, 1, 1};
-    int b_arr[] = {3, 2, 2, 1};
-    int size_a = sizeof(a_arr) / sizeof(a_arr[0]);
-    int size_b = sizeof(b_arr) / sizeof(b_arr[0]);
-    read_node(a, b, a_arr, b_arr, size_a, size_b);
-    printf("node a\n");
-    print_node(a);
-    printf("node b\n");
-    print_node(b);
-    // ptr = a;
-    // ptr = ptr->link->link;
-    // printf("ptr_before attach %d\n", ptr->coef);
-    // attach(5, 5, ptr);
-    // ptr = ptr->link;
-    // printf("ptr after attach %d\n", ptr->coef);
-    // printf("node a after attach\n");
-    // print_node(a);
-    c = cpmult(a, b);
-    printf("node c after mul\n");
-    write_node(c);
-    // erase(c);
-    eval(c, 2.5);
-    return 0;
+            node[name_count] = cpadd(node[operand1], node[operand2]);
+            printf("added\n");
+            name_count++;
+        }
+        else if (strcmp(command, "perase") == 0)
+        {
+            scanf("%49s", input_name);
+            for (int i = 0; i < name_count; ++i)
+            {
+                if (strcmp(name[i], input_name) == 0)
+                {
+                    erase(node[i]);
+                    name_count--;
+                    break;
+                }
+            }
+            printf("erased\n");
+        }
+        else if (strcmp(command, "psub") == 0)
+        {
+            scanf("%49s", name[name_count]);
+            int operand1, operand2;
+            scanf("%49s", input_name);
+            for (int i = 0; i < name_count; ++i)
+            {
+                if (strcmp(name[i], input_name) == 0)
+                {
+                    operand1 = i;
+                    break;
+                }
+            }
+            scanf("%49s", input_name);
+            for (int i = 0; i < name_count; ++i)
+            {
+                if (strcmp(name[i], input_name) == 0)
+                {
+                    operand2 = i;
+                    break;
+                }
+            }
+
+            node[name_count] = cpsub(node[operand1], node[operand2]);
+            printf("substracted\n");
+            name_count++;
+        }
+        else if (strcmp(command, "pmult") == 0)
+        {
+            scanf("%49s", name[name_count]);
+            int operand1, operand2;
+            scanf("%49s", input_name);
+            for (int i = 0; i < name_count; ++i)
+            {
+                if (strcmp(name[i], input_name) == 0)
+                {
+                    operand1 = i;
+                    break;
+                }
+            }
+            scanf("%49s", input_name);
+            for (int i = 0; i < name_count; ++i)
+            {
+                if (strcmp(name[i], input_name) == 0)
+                {
+                    operand2 = i;
+                    break;
+                }
+            }
+
+            node[name_count] = cpmult(node[operand1], node[operand2]);
+            printf("multiplied\n");
+            name_count++;
+        }
+        else if (strcmp(command, "eval") == 0)
+        {
+            float x;
+            scanf("%49s", input_name);
+            scanf("%f", &x);
+            for (int i = 0; i < name_count; ++i)
+            {
+                if (strcmp(name[i], input_name) == 0)
+                {
+                    eval(node[i], 2.5);
+                    break;
+                }
+            }
+        }
+    }
+
+    // print_node(node[2]);
+    // printf("name %s", name[0]);
+    // for (int i = 0; i < 4; ++i)
+    // {
+    //     printf("%d ", name_arr[0][i]);
+    // }
+    // printf("\nname %s", name[1]);
+    // for (int i = 0; i < 4; ++i)
+    // {
+    //     printf("%d ", name_arr[1][i]);
+    // }
 }
