@@ -1,17 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdbool.h>
-void print_map(int *map, int n, int m)
-{
-    for (int i = 0; i < n; ++i)
-    {
-        for (int j = 0; j < m; ++j)
-        {
-            printf("%3d ", map[i * m + j]);
-        }
-        printf("\n");
-    }
-}
 
 // void print_route(int *route, int n, int m)
 // {
@@ -212,7 +201,7 @@ bool visit(int *map, int n, int m, int *route, int x, int y)
 
 bool print_route(int *route, int n, int m, int x, int y)
 {
-    printf("%d %d \n", y, x);
+    printf("%d %d\n", y, x);
     route[y * m + x] = 0;
     if (x == m - 1 && y == n - 1)
     {
