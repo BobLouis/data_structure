@@ -84,7 +84,7 @@ void unite(int a, int b)
     if (ranking(a) <= ranking(b))
     {
         list[b]->parent = list[a];
-        list[a]->rank -= (ranking(a) == ranking(b));
+        list[a]->rank -= (ranking(a) == ranking(b)); //if counter the same rank the height of tree will increase 1
         list[b]->isRoot = 0;
     }
     else
