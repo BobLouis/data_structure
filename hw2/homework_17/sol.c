@@ -64,12 +64,12 @@ void bfs(int x)
     visit[x] = 1;
     while (q_front)
     {
-        printf("%d ", x);
-        out_q();
+        printf("%d ", (x = out_q()));
         for (int i = 0; i < n; ++i)
         {
             if (map[x][i] && !visit[i])
             {
+                // printf("in:%d\n", i);
                 in_q(i);
                 visit[i] = 1;
             }
