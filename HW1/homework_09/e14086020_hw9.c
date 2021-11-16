@@ -3,8 +3,7 @@
 #include <stdlib.h>
 
 #define NODE_MAX 100
-/* A binary tree node has data, pointer to left child
-   and a pointer to right child */
+
 typedef struct node
 {
     int data;
@@ -12,8 +11,6 @@ typedef struct node
     struct node *right;
 } node;
 
-/* Helper function that allocates a new node with the
-   given data and NULL left and right pointers. */
 node *newNode(int data)
 {
     struct node *node = (struct node *)malloc(sizeof(struct node));
@@ -23,9 +20,6 @@ node *newNode(int data)
 
     return (node);
 }
-
-/* Given a binary tree, print its nodes according to the
-  "bottom-up" postorder traversal. */
 
 void nonrecur_pre(node *root)
 {
@@ -105,7 +99,6 @@ int insert_node(node *ptr, int num)
     return 0;
 }
 
-/* Driver program to test above functions*/
 int main()
 {
     int n, input;

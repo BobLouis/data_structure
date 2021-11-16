@@ -1,10 +1,8 @@
-// C program for different tree traversals
 #include <stdio.h>
 #include <stdlib.h>
 
 #define NODE_MAX 100
-/* A binary tree node has data, pointer to left child
-   and a pointer to right child */
+
 typedef struct node
 {
     int data;
@@ -12,8 +10,6 @@ typedef struct node
     struct node *right;
 } node;
 
-/* Helper function that allocates a new node with the
-   given data and NULL left and right pointers. */
 node *newNode(int data)
 {
     node *node = (struct node *)malloc(sizeof(struct node));
@@ -23,35 +19,22 @@ node *newNode(int data)
     return (node);
 }
 
-/* Given a binary tree, print its nodes in inorder*/
 void printInorder(node *node)
 {
     if (node->data == -1)
         return;
 
-    /* first recur on left child */
     printInorder(node->left);
-
-    /* then print the data of node */
     printf("%d ", node->data);
-
-    /* now recur on right child */
     printInorder(node->right);
 }
 
-/* Given a binary tree, print its nodes in preorder*/
 void printPreorder(node *node)
 {
     if (node->data == -1)
         return;
-
-    /* first print data of node */
     printf("%d ", node->data);
-
-    /* then recur on left subtree */
     printPreorder(node->left);
-
-    /* now recur on right subtree */
     printPreorder(node->right);
 }
 
@@ -107,15 +90,8 @@ void swap_tree(node *root)
         }
     }
 }
-/* Driver program to test above functions*/
 int main()
 {
-    // node *root = newNode(1);
-    // root->left = newNode(2);
-    // root->right = newNode(3);
-    // root->left->left = newNode(4);
-    // root->left->right = newNode(5);
-
     int n, input;
     scanf("%d", &n);
     scanf("%d", &input);

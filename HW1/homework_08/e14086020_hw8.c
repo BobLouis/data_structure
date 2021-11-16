@@ -34,11 +34,11 @@ Node *build(Node *root)
 
     while (*str)
     {
-        if (*str == 0x28)
+        if (*str == '(')
             tmp = init(*(++str)), cur->left = tmp, stk[++top] = tmp;
-        else if (*str == 0x2C)
+        else if (*str == ',')
             tmp = init(*(++str)), cur->right = tmp, stk[top] = tmp;
-        else if (*str == 0x29)
+        else if (*str == ')')
             top--;
         cur = stk[top], str++;
     }
@@ -47,13 +47,13 @@ Node *build(Node *root)
 
 void write(Node *root, int flag)
 {
-    printf("%c%c", flag ? 0x28 : 0x2C, root->val);
+    printf("%c%c", flag ? '(' : ',', root->val);
     if (root->left)
         write(root->left, 1);
     if (root->right)
         write(root->right, 0);
     if (flag)
-        printf("%c", 0x29);
+        printf("%c", ')');
 }
 
 void sort(Node *root)
