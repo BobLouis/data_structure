@@ -61,7 +61,7 @@ int main()
 {
     int n, r, insert_node, insert_element;
     char command[6];
-    Node *cur = (Node *)malloc(sizeof(struct Node));
+    Node *cur;
     scanf("%d%d", &n, &r);
     root = newNode(r);
 
@@ -79,6 +79,5 @@ int main()
         }
     }
     printInorder(root);
-
     return 0;
 }
