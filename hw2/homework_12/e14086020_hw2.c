@@ -123,15 +123,6 @@ int pop_min(Heap *heap)
     heap->data[index] = last;
     return top;
 }
-// int verify(Heap *heap)
-// {
-//     for (int i = 1; i << 1 < heap->size; i++)
-//     {
-//         if (heap->data[i << 1] < heap->data[i] || heap->data[i << 1 | 1] < heap->data[i])
-//             return 0;
-//     }
-//     return 1;
-// }
 
 int main()
 {

@@ -16,9 +16,9 @@ typedef struct Node
 Node *list[MAX_N];
 int root[MAX_N];
 int rank[MAX_N];
+
 void init(int n)
 {
-
     for (int i = 0; i < n; ++i)
     {
         list[i] = (Node *)malloc(sizeof(struct Node));
@@ -32,19 +32,14 @@ void init(int n)
 
 int find(int a)
 {
-    Node *node = (Node *)malloc(sizeof(struct Node));
+    Node *node;
     node = list[a];
-    // printf("%disRoot%d\n", a, node->isRoot);
     while (1)
     {
         if (node->isRoot)
-        {
             return node->val;
-        }
         else
-        {
             node = node->parent;
-        }
     }
     return 0;
 }

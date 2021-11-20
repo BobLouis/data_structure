@@ -69,7 +69,6 @@ void bfs(int x)
         {
             if (map[x][i] && !visit[i])
             {
-                // printf("in:%d\n", i);
                 in_q(i);
                 visit[i] = 1;
             }

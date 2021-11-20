@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #define maxN 10007
 
+char str[10];
 int n, m, t, root[maxN], rank[maxN];
 
 void init(int x)
@@ -30,17 +31,16 @@ void unite(int x, int y)
 int main()
 {
     int x, y;
-    char cmd[10];
     scanf("%d", &t);
     while (t--)
     {
         scanf("%d%d", &n, &m), init(n);
         while (m--)
         {
-            scanf("%s", cmd);
-            if (cmd[0] == 'u')
+            scanf("%s", str);
+            if (str[0] == 'u')
                 scanf("%d%d", &x, &y), unite(x, y);
-            else if (cmd[0] == 'f')
+            else if (str[0] == 'f')
             {
                 scanf("%d", &x);
                 printf("%d\n", find(root[x]));

@@ -38,7 +38,6 @@ Node *pre_in(int pre[], int in[], int n)
     if (n == 1)
         return root;
     mid = find(in, pre[0], n);
-    // printf("mid: %d\n", mid);
     root->left = pre_in(pre + 1, in, mid);
     root->right = pre_in(pre + mid + 1, in + mid + 1, n - mid - 1);
     return root;
@@ -80,8 +79,7 @@ int main()
 {
     int r, n;
     char str[20];
-    int pre[MAX_N];
-    int in[MAX_N];
+    int p[MAX_N], in[MAX_N];
     Node *root;
     scanf("%d", &r);
     while (r--)
@@ -89,18 +87,18 @@ int main()
         scanf("%s", str);
         scanf("%d", &n);
         for (int i = 0; i < n; ++i)
-            scanf("%d", &pre[i]);
+            scanf("%d", &p[i]);
         for (int i = 0; i < n; ++i)
             scanf("%d", &in[i]);
         if (str[1] == 'r')
         {
-            root = pre_in(pre, in, n);
+            root = pre_in(p, in, n);
             postorder(root);
             puts("");
         }
         else
         {
-            root = post_in(pre, in, n);
+            root = post_in(p, in, n);
             preorder(root);
             puts("");
         }
