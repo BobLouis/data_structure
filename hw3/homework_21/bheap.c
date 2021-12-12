@@ -14,7 +14,21 @@ typedef struct Tree
     struct Node *main, *excess;
 } Tree;
 
-Tree table[MAX_N];
+Tree *table[MAX_N];
+int table_size = 1;
+
+void init()
+{
+    Tree *tmp;
+
+    for (int i = 0; i < MAX_N; ++i)
+    {
+        tmp = (Tree *)malloc(sizeof(Tree));
+        tmp->main = NULL;
+        tmp->excess = NULL;
+        table[i] = tmp;
+    }
+}
 
 Node *new_node(int x)
 {
@@ -25,7 +39,7 @@ Node *new_node(int x)
     return tmp;
 }
 
-Node *merge_tree(Node *b1, Node *b2)
+Node *merge(Node *b1, Node *b2)
 {
     //make the parent smaller
     if (b1->data > b2->data)
@@ -37,43 +51,69 @@ Node *merge_tree(Node *b1, Node *b2)
     else
     {
         b2->parent = b1, b2->sibling = b1->child;
-        b1->child = b1, b2->deg++;
+        b1->child = b2, b1->deg++;
         return b1;
     }
 }
 
 void adjust()
 {
-    if (heap_size <= 1)
-        return;
-    int i1 = 0, i2 = 1;
-    while (i2 < heap_size)
+    Node *tmp;
+    for (int i = 0; i < table_size; ++i)
     {
-        if (heap[i1]->deg == heap[i2]->deg)
+        if (table[i]->main != NULL && table[i]->excess != NULL)
         {
-            heap[i1] = merge_tree(heap[i1], heap[i2]);
-            for (int i = i2 + 1; i < heap_size; i++)
-                heap[i - 1] = heap[i];
-            heap_size--;
-            i1++;
-            i2 = i1 + 1;
-        }
-        else
-        {
-            i1++;
-            i2++;
+            // printf("%d %d %d %d\n", table[i]->main->data, table[i]->main->deg, table[i]->excess->data, table[i]->excess->deg);
+            tmp = merge(table[i]->main, table[i]->excess);
+            // printf("%d %d %d %d", tmp->data, tmp->deg, tmp->child->data, tmp->child->deg);
+            table[i]->main = table[i]->excess = NULL;
+            if (!table[i + 1]->main)
+            {
+                table[i + 1]->main = tmp;
+            }
+            else
+            {
+                table[i + 1]->excess = tmp;
+            }
+            if ((i + 1) == table_size)
+                ++table_size;
         }
     }
 }
 
 void insert_node(int x)
 {
+    Node *tmp = new_node(x);
+    if (!table[0]->main)
+    {
+        table[0]->main = tmp;
+    }
+    else
+    {
+        table[0]->excess = tmp;
+    }
 }
 
 int main()
 {
-    Node *b1 = new_node(1);
-    Node *b2 = new_node(2);
-    printf("%d", b1->data);
+    init();
+    Node *ptr;
+    for (int i = 0; i < 10; ++i)
+    {
+        insert_node(i);
+        adjust();
+    }
+    printf("%d\n", table_size);
+    for (int i = 0; i < table_size; i++)
+    {
+        printf("%p  %p \n", table[i]->main, table[i]->excess);
+        if (table[i]->main)
+        {
+            for (ptr = table[i]->main; ptr != NULL; ptr = ptr->child)
+                printf("deg %d data %d\n", ptr->deg, ptr->data);
+        }
+        printf("\n");
+    }
+
     return 0;
 }
