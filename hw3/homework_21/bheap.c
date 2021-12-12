@@ -9,8 +9,12 @@ typedef struct Node
     struct Node *parent, *child, *sibling;
 } Node;
 
-Node *heap[MAX_N];
-int heap_size = 0;
+typedef struct Tree
+{
+    struct Node *main, *excess;
+} Tree;
+
+Tree table[MAX_N];
 
 Node *new_node(int x)
 {
