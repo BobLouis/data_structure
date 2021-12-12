@@ -171,13 +171,13 @@ int pop_min()
 int main()
 {
     init();
-    for (int i = 0; i < 130; ++i)
+    for (int i = 0; i < 5000; ++i)
     {
         insert_node(i);
     }
 
     print();
-    for (int i = 0; i < 120; ++i)
+    for (int i = 0; i < 4990; ++i)
     {
         printf("%d\n", pop_min());
     }
