@@ -90,21 +90,16 @@ void insert_node(int x)
     {
         table[0]->excess = tmp;
     }
+    adjust();
 }
 
-int main()
+void print()
 {
-    init();
     Node *ptr, *sib;
-    for (int i = 0; i < 8; ++i)
-    {
-        insert_node(i);
-        adjust();
-    }
-    printf("%d\n", table_size);
+    printf("size %d\n", table_size);
     for (int i = 0; i < table_size; i++)
     {
-        printf("%p  %p \n", table[i]->main, table[i]->excess);
+        printf("%d  %p  %p \n", i, table[i]->main, table[i]->excess);
         if (table[i]->main)
         {
             for (ptr = table[i]->main; ptr != NULL; ptr = ptr->child)
@@ -116,6 +111,58 @@ int main()
         }
         printf("\n");
     }
+}
 
+Node *get_min()
+{
+    Node *tmp = NULL;
+    for (int i = 0; i < table_size; ++i)
+    {
+        if (table[i]->main)
+        {
+            if (!tmp)
+                tmp = table[i]->main;
+            else
+            {
+                if (table[i]->main->data < tmp->data)
+                    tmp = table[i]->main;
+            }
+        }
+    }
+    return tmp;
+}
+
+int pop_min()
+{
+    Node *pop = get_min();
+    Node *tmp;
+    for (Node *ptr = pop->child; ptr != NULL; ptr = tmp)
+    {
+        if (!table[ptr->deg]->main)
+            table[ptr->deg]->main = ptr;
+        else
+            table[ptr->deg]->excess = ptr;
+        tmp = ptr->sibling;
+        ptr->sibling = NULL;
+    }
+    table[pop->deg]->main = NULL;
+    adjust();
+    return pop->data;
+}
+
+int main()
+{
+    init();
+    for (int i = 0; i < 12; ++i)
+    {
+        insert_node(i);
+    }
+
+    print();
+    for (int i = 0; i < 12; ++i)
+    {
+        printf("%d\n", pop_min());
+    }
+    print();
     return 0;
 }
