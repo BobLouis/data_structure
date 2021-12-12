@@ -59,6 +59,24 @@ Node *merge(Node *b1, Node *b2)
 void adjust()
 {
     Node *tmp;
+    for (int i = table_size - 1; i >= 0; --i)
+    {
+        if (table[i]->main != NULL && table[i]->excess != NULL)
+        {
+            tmp = merge(table[i]->main, table[i]->excess);
+            table[i]->main = table[i]->excess = NULL;
+            if (!table[i + 1]->main)
+            {
+                table[i + 1]->main = tmp;
+            }
+            else
+            {
+                table[i + 1]->excess = tmp;
+            }
+            if ((i + 1) == table_size)
+                ++table_size;
+        }
+    }
     for (int i = 0; i < table_size; ++i)
     {
         if (table[i]->main != NULL && table[i]->excess != NULL)
@@ -153,13 +171,13 @@ int pop_min()
 int main()
 {
     init();
-    for (int i = 0; i < 12; ++i)
+    for (int i = 0; i < 130; ++i)
     {
         insert_node(i);
     }
 
     print();
-    for (int i = 0; i < 12; ++i)
+    for (int i = 0; i < 120; ++i)
     {
         printf("%d\n", pop_min());
     }
