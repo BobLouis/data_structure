@@ -63,9 +63,7 @@ void adjust()
     {
         if (table[i]->main != NULL && table[i]->excess != NULL)
         {
-            // printf("%d %d %d %d\n", table[i]->main->data, table[i]->main->deg, table[i]->excess->data, table[i]->excess->deg);
             tmp = merge(table[i]->main, table[i]->excess);
-            // printf("%d %d %d %d", tmp->data, tmp->deg, tmp->child->data, tmp->child->deg);
             table[i]->main = table[i]->excess = NULL;
             if (!table[i + 1]->main)
             {
@@ -97,8 +95,8 @@ void insert_node(int x)
 int main()
 {
     init();
-    Node *ptr;
-    for (int i = 0; i < 10; ++i)
+    Node *ptr, *sib;
+    for (int i = 0; i < 8; ++i)
     {
         insert_node(i);
         adjust();
@@ -110,7 +108,11 @@ int main()
         if (table[i]->main)
         {
             for (ptr = table[i]->main; ptr != NULL; ptr = ptr->child)
-                printf("deg %d data %d\n", ptr->deg, ptr->data);
+            {
+                for (sib = ptr; sib != NULL; sib = sib->sibling)
+                    printf("deg %d data %d  ", sib->deg, sib->data);
+                printf("\n");
+            }
         }
         printf("\n");
     }
