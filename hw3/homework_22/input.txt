@@ -15,4 +15,13 @@ insert 8 1008
 insert 100 1001
 delete 100 1001
 delete 6 1006
+delete 7 1007
+decrease 4 1004 1000
+extract
+extract
+extract
+extract
+extract
+extract
+extract
 quit

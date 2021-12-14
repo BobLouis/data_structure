@@ -142,7 +142,8 @@ void Consolidate()
 void Extract_min(int *val, int *key)
 {
     if (mini == NULL)
-        printf("The heap is empty");
+        ;
+    // printf("The heap is empty");
     else
     {
         *val = mini->val;
@@ -225,8 +226,8 @@ void Cascase_cut(Node *temp)
 // Function to decrease the value of a node in the heap
 void Decrease_key(Node *found, int val)
 {
-    if (mini == NULL)
-        printf("The Heap is Empty");
+    // if (mini == NULL)
+    //     printf("The Heap is Empty");
 
     if (found == NULL)
         printf("Node not found in the Heap");
@@ -272,28 +273,53 @@ void Find(Node *mini, int old_key, int key, int val)
 void Deletion(int val, int key)
 {
     if (mini == NULL)
-        printf("The heap is empty");
+        ;
+    // printf("The heap is empty");
     else
     {
         int old_key = key;
         // Decreasing the value of the node to 0
-        Find(mini, key, -99999, val);
+        Node *del = NULL;
+        if (mini->key == key && mini->val == val)
+        {
+            del = mini;
+        }
+        else
+        {
+            for (Node *ptr = mini->right; ptr != mini; ptr = ptr->right)
+            {
+                if (ptr->key == key && ptr->val == val)
+                    del = ptr;
+            }
+        }
 
-        // Calling Extract_min function to
-        // delete minimum value node, which is 0
-        int key, val;
-        Extract_min(&val, &key);
-        printf("Key Deleted%d %d", old_key, val);
+        if (del)
+        {
+            del->left->right = del->right;
+            del->right->left = del->left;
+        }
+        else
+        {
+            Find(mini, key, -99999, val);
+            // Calling Extract_min function to
+            // delete minimum value node, which is 0
+            int key, val;
+            Extract_min(&val, &key);
+        }
+        printf("Key Deleted%d %d\n", old_key, val);
     }
 }
 
 void print(Node *node)
 {
-    printf("key: %d val: %d", node->key, node->val);
+    printf("key: %d val: %d\n", node->key, node->val);
     if (node->child != NULL)
+    {
         print(node->child);
-    if (node->right != NULL)
-        print(node->right);
+    }
+
+    for (Node *ptr = node->right; ptr != node; ptr = ptr->right)
+        printf("key: %d val: %d\n", ptr->key, ptr->val);
 }
 
 // Function to display the heap
@@ -301,20 +327,22 @@ void display()
 {
     Node *ptr = mini;
     if (ptr == NULL)
-        printf("The Heap is Empty");
+        ;
+    // printf("The Heap is Empty");
 
     else
     {
         printf("The root nodes of Heap are: ");
         do
         {
-            printf("%d %d", ptr->key, ptr->val);
+            printf("%d %d\n", ptr->key, ptr->val);
+            if (ptr->child)
+                print(ptr->child->right);
             ptr = ptr->right;
             if (ptr != mini)
             {
                 printf("-->");
             }
-            print(ptr);
         } while (ptr != mini && ptr->right != NULL);
         printf("The heap has %d nodes", no_of_nodes);
     }
@@ -352,7 +380,7 @@ int main()
         else if (*str == 'e')
         {
             Extract_min(&val, &key);
-            printf("(%d)%d", key, val);
+            printf("(%d)%d\n", key, val);
         }
     }
     display();
