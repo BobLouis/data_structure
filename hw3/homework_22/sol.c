@@ -282,7 +282,7 @@ void Deletion(int val, int key)
         Node *del = NULL;
         for (Node *ptr = mini->right; ptr != mini; ptr = ptr->right)
         {
-            if (ptr->key == key && ptr->val == val)
+            if (ptr->key == key && ptr->val == val && ptr->child == NULL)
                 del = ptr;
         }
 
