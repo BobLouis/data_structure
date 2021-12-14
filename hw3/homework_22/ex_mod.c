@@ -280,17 +280,10 @@ void Deletion(int val, int key)
         int old_key = key;
         // Decreasing the value of the node to 0
         Node *del = NULL;
-        if (mini->key == key && mini->val == val)
+        for (Node *ptr = mini->right; ptr != mini; ptr = ptr->right)
         {
-            del = mini;
-        }
-        else
-        {
-            for (Node *ptr = mini->right; ptr != mini; ptr = ptr->right)
-            {
-                if (ptr->key == key && ptr->val == val)
-                    del = ptr;
-            }
+            if (ptr->key == key && ptr->val == val)
+                del = ptr;
         }
 
         if (del)
@@ -306,7 +299,7 @@ void Deletion(int val, int key)
             int key, val;
             Extract_min(&val, &key);
         }
-        printf("Key Deleted%d %d\n", old_key, val);
+        // printf("Key Deleted%d %d\n", old_key, val);
     }
 }
 
@@ -333,17 +326,19 @@ void display()
     else
     {
         printf("The root nodes of Heap are: ");
-        do
-        {
-            printf("%d %d\n", ptr->key, ptr->val);
-            if (ptr->child)
-                print(ptr->child->right);
-            ptr = ptr->right;
-            if (ptr != mini)
-            {
-                printf("-->");
-            }
-        } while (ptr != mini && ptr->right != NULL);
+        printf("%d %d\n", ptr->key, ptr->val);
+        // do
+        // {
+        //     printf("%d %d\n", ptr->key, ptr->val);
+        //     if (ptr->child)
+        //         print(ptr->child->right);
+        //     ptr = ptr->right;
+        //     if (ptr != mini)
+        //     {
+        //         printf("-->");
+        //     }
+        // } while (ptr != mini && ptr->right != NULL);
+
         printf("The heap has %d nodes", no_of_nodes);
     }
 }
@@ -379,8 +374,11 @@ int main()
         }
         else if (*str == 'e')
         {
-            Extract_min(&val, &key);
-            printf("(%d)%d\n", key, val);
+            if (mini)
+            {
+                Extract_min(&val, &key);
+                printf("(%d)%d\n", key, val);
+            }
         }
     }
     display();
