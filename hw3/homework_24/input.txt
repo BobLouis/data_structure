@@ -1,0 +1,12 @@
+AVL
+insert 50
+d
+insert 100
+d
+insert 150
+d
+insert 200
+d
+insert 250
+d
+quit
