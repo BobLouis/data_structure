@@ -11,7 +11,7 @@ typedef struct node
 } node;
 
 node *root = NULL;
-
+int dup = 0;
 void inorder(node *);
 
 node *new_node(int x)
@@ -41,7 +41,12 @@ node *bst(node *trav,
         trav->r = bst(trav->r, temp);
         trav->r->p = trav;
     }
-
+    else
+    {
+        dup = 1;
+        return trav;
+    }
+    dup = 0;
     return trav;
 }
 
@@ -222,7 +227,8 @@ int main()
                 scanf("%d", &x);
                 tmp = new_node(x);
                 root = bst(root, tmp);
-                fixup(root, tmp);
+                if (!dup)
+                    fixup(root, tmp);
             }
             else if (*str == 's')
             {
@@ -232,6 +238,15 @@ int main()
                     printf("%s", tmp->c ? "red\n" : "black\n");
                 else
                     printf("Not found\n");
+            }
+            else if (*str == 'e')
+            {
+                scanf("%d", &x);
+                tmp = find(root, x);
+                if (tmp)
+                    printf("exist\n");
+                else
+                    printf("Not exist\n");
             }
         }
     }
