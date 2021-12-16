@@ -103,6 +103,110 @@ Node *insert(Node *node, int x)
     return node;
 }
 
+Node *minValueNode(Node *node)
+{
+    Node *current = node;
+
+    /* loop down to find the leftmost leaf */
+    while (current->left != NULL)
+        current = current->left;
+
+    return current;
+}
+
+// Recursive function to delete a node with given key
+// from subtree with given root. It returns root of
+// the modified subtree.
+Node *deleteNode(Node *root, int key)
+{
+    // STEP 1: PERFORM STANDARD BST DELETE
+
+    if (root == NULL)
+        return root;
+
+    // If the key to be deleted is smaller than the
+    // root's key, then it lies in left subtree
+    if (key < root->val)
+        root->left = deleteNode(root->left, key);
+
+    // If the key to be deleted is greater than the
+    // root's key, then it lies in right subtree
+    else if (key > root->val)
+        root->right = deleteNode(root->right, key);
+
+    // if key is same as root's key, then This is
+    // the node to be deleted
+    else
+    {
+        // node with only one child or no child
+        if ((root->left == NULL) || (root->right == NULL))
+        {
+            Node *temp = root->left ? root->left : root->right;
+
+            // No child case
+            if (temp == NULL)
+            {
+                temp = root;
+                root = NULL;
+            }
+            else               // One child case
+                *root = *temp; // Copy the contents of
+                               // the non-empty child
+            free(temp);
+        }
+        else
+        {
+            // node with two children: Get the inorder
+            // successor (smallest in the right subtree)
+            Node *temp = minValueNode(root->right);
+
+            // Copy the inorder successor's data to this node
+            root->val = temp->val;
+
+            // Delete the inorder successor
+            root->right = deleteNode(root->right, temp->val);
+        }
+    }
+
+    // If the tree had only one node then return
+    if (root == NULL)
+        return root;
+
+    // STEP 2: UPDATE HEIGHT OF THE CURRENT NODE
+    root->height = 1 + max(height(root->left),
+                           height(root->right));
+
+    // STEP 3: GET THE BALANCE FACTOR OF THIS NODE (to
+    // check whether this node became unbalanced)
+    int balance = get_balance(root);
+
+    // If this node becomes unbalanced, then there are 4 cases
+
+    // Left Left Case
+    if (balance > 1 && get_balance(root->left) >= 0)
+        return right_R(root);
+
+    // Left Right Case
+    if (balance > 1 && get_balance(root->left) < 0)
+    {
+        root->left = left_R(root->left);
+        return right_R(root);
+    }
+
+    // Right Right Case
+    if (balance < -1 && get_balance(root->right) <= 0)
+        return left_R(root);
+
+    // Right Left Case
+    if (balance < -1 && get_balance(root->right) > 0)
+    {
+        root->right = right_R(root->right);
+        return left_R(root);
+    }
+
+    return root;
+}
+
 void preOrder(Node *root)
 {
     if (root != NULL)
@@ -126,30 +230,8 @@ Node *find(Node *node, int x)
     return NULL;
 }
 
-/* Driver program to test above function*/
 int main()
 {
-
-    /* Constructing tree given in the above figure */
-    //     root = insert(root, 10);
-    //     root = insert(root, 20);
-    //     root = insert(root, 30);
-    //     root = insert(root, 40);
-    //     root = insert(root, 50);
-    //     root = insert(root, 25);
-
-    //     /* The constructed AVL Tree would be
-    //             30
-    //            /  \
-//          20   40
-    //         /  \     \
-//        10  25    50
-    //   */
-
-    //     printf("Preorder traversal of the constructed AVL"
-    //            " tree is \n");
-    //     preOrder(root);
-
     char str[15] = {'\0'};
     int x;
     Node *node;
@@ -190,10 +272,15 @@ int main()
                     printf("Not exist\n");
                 }
             }
-            else if (*str == 'd')
+            else if (*str == 'd' && strlen(str) == 1)
             {
                 preOrder(root);
                 printf("\n");
+            }
+            else if (*str == 'd')
+            {
+                scanf("%d", &x);
+                deleteNode(root, x);
             }
         }
     }

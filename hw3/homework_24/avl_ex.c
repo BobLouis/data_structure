@@ -1,46 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-/*
-a) Left Left Case 
-
-T1, T2, T3 and T4 are subtrees.
-         z                                      y 
-        / \                                   /   \
-       y   T4      Right Rotate (z)          x      z
-      / \          - - - - - - - - ->      /  \    /  \ 
-     x   T3                               T1  T2  T3  T4
-    / \
-  T1   T2
-b) Left Right Case 
-
-     z                               z                           x
-    / \                            /   \                        /  \ 
-   y   T4  Left Rotate (y)        x    T4  Right Rotate(z)    y      z
-  / \      - - - - - - - - ->    /  \      - - - - - - - ->  / \    / \
-T1   x                          y    T3                    T1  T2 T3  T4
-    / \                        / \
-  T2   T3                    T1   T2
-c) Right Right Case 
-
-  z                                y
- /  \                            /   \ 
-T1   y     Left Rotate(z)       z      x
-    /  \   - - - - - - - ->    / \    / \
-   T2   x                     T1  T2 T3  T4
-       / \
-     T3  T4
-d) Right Left Case 
-
-   z                            z                            x
-  / \                          / \                          /  \ 
-T1   y   Right Rotate (y)    T1   x      Left Rotate(z)   z      y
-    / \  - - - - - - - - ->     /  \   - - - - - - - ->  / \    / \
-   x   T4                      T2   y                  T1  T2  T3  T4
-  / \                              /  \
-T2   T3                           T3   T4
-*/
-
 // An AVL tree node
 struct Node
 {
@@ -53,7 +13,7 @@ struct Node
 // A utility function to get maximum of two integers
 int max(int a, int b);
 
-// A utility function to get the height of the tree
+// A utility function to get height of the tree
 int height(struct Node *N)
 {
     if (N == NULL)
@@ -118,7 +78,7 @@ struct Node *leftRotate(struct Node *x)
     return y;
 }
 
-// Get Balance factor of node＋ N
+// Get Balance factor of node N
 int getBalance(struct Node *N)
 {
     if (N == NULL)
@@ -126,11 +86,9 @@ int getBalance(struct Node *N)
     return height(N->left) - height(N->right);
 }
 
-// Recursive function to insert a key in the subtree rooted
-// with node and returns the new root of the subtree.
 struct Node *insert(struct Node *node, int key)
 {
-    /* 1.  Perform the normal BST insertion */
+    /* 1.  Perform the normal BST rotation */
     if (node == NULL)
         return (newNode(key));
 
@@ -138,7 +96,7 @@ struct Node *insert(struct Node *node, int key)
         node->left = insert(node->left, key);
     else if (key > node->key)
         node->right = insert(node->right, key);
-    else // Equal keys are not allowed in BST
+    else // Equal keys not allowed
         return node;
 
     /* 2. Update height of this ancestor node */
@@ -150,8 +108,7 @@ struct Node *insert(struct Node *node, int key)
           unbalanced */
     int balance = getBalance(node);
 
-    // If this node becomes unbalanced, then
-    // there are 4 cases
+    // If this node becomes unbalanced, then there are 4 cases
 
     // Left Left Case
     if (balance > 1 && key < node->left->key)
@@ -179,8 +136,116 @@ struct Node *insert(struct Node *node, int key)
     return node;
 }
 
-// A utility function to print preorder traversal
-// of the tree.
+/* Given a non-empty binary search tree, return the
+   node with minimum key value found in that tree.
+   Note that the entire tree does not need to be
+   searched. */
+struct Node *minValueNode(struct Node *node)
+{
+    struct Node *current = node;
+
+    /* loop down to find the leftmost leaf */
+    while (current->left != NULL)
+        current = current->left;
+
+    return current;
+}
+
+// Recursive function to delete a node with given key
+// from subtree with given root. It returns root of
+// the modified subtree.
+struct Node *deleteNode(struct Node *root, int key)
+{
+    // STEP 1: PERFORM STANDARD BST DELETE
+
+    if (root == NULL)
+        return root;
+
+    // If the key to be deleted is smaller than the
+    // root's key, then it lies in left subtree
+    if (key < root->key)
+        root->left = deleteNode(root->left, key);
+
+    // If the key to be deleted is greater than the
+    // root's key, then it lies in right subtree
+    else if (key > root->key)
+        root->right = deleteNode(root->right, key);
+
+    // if key is same as root's key, then This is
+    // the node to be deleted
+    else
+    {
+        // node with only one child or no child
+        if ((root->left == NULL) || (root->right == NULL))
+        {
+            struct Node *temp = root->left ? root->left : root->right;
+
+            // No child case
+            if (temp == NULL)
+            {
+                temp = root;
+                root = NULL;
+            }
+            else               // One child case
+                *root = *temp; // Copy the contents of
+                               // the non-empty child
+            free(temp);
+        }
+        else
+        {
+            // node with two children: Get the inorder
+            // successor (smallest in the right subtree)
+            struct Node *temp = minValueNode(root->right);
+
+            // Copy the inorder successor's data to this node
+            root->key = temp->key;
+
+            // Delete the inorder successor
+            root->right = deleteNode(root->right, temp->key);
+        }
+    }
+
+    // If the tree had only one node then return
+    if (root == NULL)
+        return root;
+
+    // STEP 2: UPDATE HEIGHT OF THE CURRENT NODE
+    root->height = 1 + max(height(root->left),
+                           height(root->right));
+
+    // STEP 3: GET THE BALANCE FACTOR OF THIS NODE (to
+    // check whether this node became unbalanced)
+    int balance = getBalance(root);
+
+    // If this node becomes unbalanced, then there are 4 cases
+
+    // Left Left Case
+    if (balance > 1 && getBalance(root->left) >= 0)
+        return rightRotate(root);
+
+    // Left Right Case
+    if (balance > 1 && getBalance(root->left) < 0)
+    {
+        root->left = leftRotate(root->left);
+        return rightRotate(root);
+    }
+
+    // Right Right Case
+    if (balance < -1 && getBalance(root->right) <= 0)
+        return leftRotate(root);
+
+    // Right Left Case
+    if (balance < -1 && getBalance(root->right) > 0)
+    {
+        root->right = rightRotate(root->right);
+        return leftRotate(root);
+    }
+
+    return root;
+}
+
+// A utility function to print preorder traversal of
+// the tree.
 // The function also prints height of every node
 void preOrder(struct Node *root)
 {
@@ -198,24 +263,43 @@ int main()
     struct Node *root = NULL;
 
     /* Constructing tree given in the above figure */
+    root = insert(root, 9);
+    root = insert(root, 5);
     root = insert(root, 10);
-    root = insert(root, 20);
-    root = insert(root, 30);
-    root = insert(root, 40);
-    root = insert(root, 50);
-    root = insert(root, 25);
+    root = insert(root, 0);
+    root = insert(root, 6);
+    root = insert(root, 11);
+    root = insert(root, -1);
+    root = insert(root, 1);
+    root = insert(root, 2);
 
     /* The constructed AVL Tree would be
-            30
+            9
            /  \
-         20   40
+          1    10
         /  \     \
-       10  25    50
-  */
+       0    5     11
+      /    /  \
+     -1   2    6
+    */
 
-    printf("Preorder traversal of the constructed AVL"
-           " tree is \n");
+    printf("Preorder traversal of the constructed AVL "
+           "tree is \n");
+    preOrder(root);
+
+    root = deleteNode(root, 10);
+
+    /* The AVL Tree after deletion of 10
+            1
+           /  \
+          0    9
+        /     /  \
+       -1    5     11
+           /  \
+          2    6
+    */
+
+    printf("\nPreorder traversal after deletion of 10 \n");
     preOrder(root);
 
     return 0;
-}
