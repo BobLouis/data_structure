@@ -2,6 +2,8 @@
 #include <cstdio>
 using namespace std;
 
+int arr[100000];
+int top = 1;
 // A BTree node
 class BTreeNode
 {
@@ -18,7 +20,7 @@ public:
     void traverse();
 
     int traverse_n(int x);
-
+    void traverse_a();
     // A function to search a key in subtree rooted with this node.
     BTreeNode *search(int k); // returns NULL if k is not present.
 
@@ -93,6 +95,11 @@ public:
     {
         if (root != NULL)
             root->traverse();
+    }
+    void traverse_a()
+    {
+        if (root != NULL)
+            root->traverse_a();
     }
 
     int traverse_n(int x)
@@ -564,6 +571,26 @@ void BTreeNode::traverse()
         C[i]->traverse();
 }
 
+void BTreeNode::traverse_a()
+{
+    // There are n keys and n+1 children, traverse through n keys
+    // and first n children
+    int i;
+    for (i = 0; i < n; i++)
+    {
+        // If this is not leaf, then before printing key[i],
+        // traverse the subtree rooted with child C[i].
+        if (leaf == 0)
+            C[i]->traverse_a();
+        // cout << " " << keys[i];
+        arr[top++] = keys[i];
+    }
+
+    // Print the subtree rooted with last child
+    if (leaf == 0)
+        C[i]->traverse_a();
+}
+
 int BTreeNode::traverse_n(int x)
 {
     // There are n keys and n+1 children, traverse through n keys
@@ -586,7 +613,7 @@ int BTreeNode::traverse_n(int x)
             {
                 // printf("%d\n", keys[i]);
                 ans = keys[i];
-                return 1;
+                return keys[i];
             }
         }
 
@@ -595,7 +622,7 @@ int BTreeNode::traverse_n(int x)
             if (C[i]->traverse_n(x))
                 return ans;
     }
-    return -1;
+    return 0;
 }
 
 // Function to search key k in subtree rooted with this node
@@ -649,7 +676,7 @@ void BTree::del_node(int k)
 int main()
 {
     BTree t(3); // A B-Tree with minimum degree 3
-
+    /*
     int n, x, r;
     char str[15];
     BTreeNode *tmp;
@@ -703,15 +730,17 @@ int main()
                 tmp = t.search(x);
                 if (tmp)
                 {
-                    t.del_node(r);
+                    t.del_node(x);
                     printf("remove(%d) = %d\n", x, x);
                 }
                 else
                     printf("removek(%d) = not found\n", x);
             }
         }
+        t.traverse();
+        printf("\n");
     }
-    /*
+    */
     t.insert(1);
     t.insert(3);
     t.insert(7);
@@ -750,39 +779,39 @@ int main()
     t.insert(24);
 
     cout << "Traversal of tree constructed is\n";
-    t.traverse();
+    t.traverse_a();
     cout << endl;
-    // cout << t.traverse_n(20) << endl;
-    cout << t.search(100) << endl;
-    t.del_node(100);
-    cout << "Traversal of tree after removing 6\n";
-    t.traverse();
-    cout << endl;
+    cout << arr[1] << endl;
+    cout << arr[2] << endl;
+    cout << arr[3] << endl;
+    // cout << "Traversal of tree after removing 6\n";
+    // t.traverse();
+    // cout << endl;
 
-    t.del_node(13);
-    cout << "Traversal of tree after removing 13\n";
-    t.traverse();
-    cout << endl;
+    // t.del_node(13);
+    // cout << "Traversal of tree after removing 13\n";
+    // t.traverse();
+    // cout << endl;
 
-    t.del_node(7);
-    cout << "Traversal of tree after removing 7\n";
-    t.traverse();
-    cout << endl;
+    // t.del_node(20);
+    // cout << "Traversal of tree after removing 7\n";
+    // t.traverse();
+    // cout << endl;
 
-    t.del_node(4);
-    cout << "Traversal of tree after removing 4\n";
-    t.traverse();
-    cout << endl;
+    // t.del_node(4);
+    // cout << "Traversal of tree after removing 4\n";
+    // t.traverse();
+    // cout << endl;
 
-    t.del_node(2);
-    cout << "Traversal of tree after removing 2\n";
-    t.traverse();
-    cout << endl;
+    // t.del_node(2);
+    // cout << "Traversal of tree after removing 2\n";
+    // t.traverse();
+    // cout << endl;
 
-    t.del_node(16);
-    cout << "Traversal of tree after removing 16\n";
-    t.traverse();
-    cout << endl;
-    */
+    // t.del_node(16);
+    // cout << "Traversal of tree after removing 16\n";
+    // t.traverse();
+    // cout << endl;
+
     return 0;
 }
