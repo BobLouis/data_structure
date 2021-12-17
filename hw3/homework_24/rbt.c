@@ -13,7 +13,9 @@ typedef struct node
 node *root = NULL;
 int dup = 0;
 void inorder(node *);
-
+void red_black_transplant(node *, node *);
+node *tree_minimum(struct node *x);
+void red_black_delete_fixup(node *x);
 node *new_node(int x)
 {
     node *temp = (node *)malloc(sizeof(node));
@@ -211,6 +213,192 @@ void inorder(node *trav)
     inorder(trav->r);
 }
 
+node *tree_minimum(node *x)
+{
+    while (x->l != NULL)
+    {
+        x = x->l;
+    }
+    return x;
+}
+
+void red_black_delete(struct node *z)
+{
+    struct node *y, *x;
+    int yOriginalColor;
+
+    y = z;
+    yOriginalColor = y->c;
+
+    if (z->l == NULL)
+    {
+        x = z->r;
+        red_black_transplant(z, z->r);
+    }
+    else if (z->r == NULL)
+    {
+        x = z->l;
+        red_black_transplant(z, z->l);
+    }
+    else
+    {
+        y = tree_minimum(z->r);
+        yOriginalColor = y->c;
+        x = y->r;
+
+        if (y->p == z)
+        {
+            x->p = y;
+        }
+        else
+        {
+            red_black_transplant(y, y->r);
+            y->r = z->r;
+            y->r->p = y;
+        }
+
+        red_black_transplant(z, y);
+        y->l = z->l;
+        y->l->p = y;
+        y->c = z->c;
+    }
+
+    if (yOriginalColor == 0)
+    {
+        red_black_delete_fixup(x);
+    }
+}
+
+/*
+ * As y was black and removed x gains y's extra blackness.
+ * Move the extra blackness of x until
+ *		1. x becomes root. In that case just remove extra blackness
+ *		2. x becomes a RED and BLACK node. in that case just make x BLACK
+ *
+ * First check if x is x's parents left or right child. Say x is left child
+ *
+ * There are 4 cases.
+ *
+ * Case 1: x's sibling w is red. transform case 1 into case 2 by recoloring
+ * w and x's parent. Then left rotate x's parent.
+ *
+ * Case 2: x's sibling w is black, w's both children is black. Move x and w's
+ * blackness to x's parent by coloring w to RED and x's parent to BLACK.
+ * Make x's parent new x.Notice if case 2 come through case 1 x's parent becomes 
+ * RED and BLACK as it became RED in case 1. So loop will stop in next iteration.
+ *
+ * Case 3: w is black, w's left child is red and right child is black. Transform
+ * case 3 into case 4 by recoloring w and w's left child, then right rotate w.
+ *
+ * Case 4: w is black, w's right child is red. recolor w with x's parent's color.
+ * make x's parent BLACK, w's right child black. Now left rotate x's parent. Make x
+ * point to root. So loop will be stopped in next iteration.
+ *
+ * If x is right child of it's parent do exact same thing swapping left<->right
+ */
+
+void red_black_delete_fixup(node *x)
+{
+    node *w;
+
+    while (x != root && x->c == 0)
+    {
+
+        if (x == x->p->l)
+        {
+            w = x->p->r;
+
+            if (w->c == 1)
+            {
+                w->c = 0;
+                x->p->c = 0;
+                leftrotate(x->p);
+                w = x->p->r;
+            }
+
+            if (w->l->c == 0 && w->r->c == 0)
+            {
+                w->c = 0;
+                x->p->c = 0;
+                x = x->p;
+            }
+            else
+            {
+
+                if (w->r->c == 0)
+                {
+                    w->c = 0;
+                    w->l->c = 0;
+                    rightrotate(w);
+                    w = x->p->r;
+                }
+
+                w->c = x->p->c;
+                x->p->c = 0;
+                x->r->c = 0;
+                leftrotate(x->p);
+                x = root;
+            }
+        }
+        else
+        {
+            w = x->p->l;
+
+            if (w->c == 0)
+            {
+                w->c = 0;
+                x->p->c = 0;
+                rightrotate(x->p);
+                w = x->p->l;
+            }
+
+            if (w->l->c == 0 && w->r->c == 0)
+            {
+                w->c = 0;
+                x->p->c = 0;
+                x = x->p;
+            }
+            else
+            {
+
+                if (w->l->c == 0)
+                {
+                    w->c = 0;
+                    w->r->c = 0;
+                    leftrotate(w);
+                    w = x->p->l;
+                }
+
+                w->c = x->p->c;
+                x->p->c = 0;
+                w->l->c = 0;
+                rightrotate(x->p);
+                x = root;
+            }
+        }
+    }
+
+    x->c = 0;
+}
+
+/* replace node u with node v */
+void red_black_transplant(struct node *u, struct node *v)
+{
+    if (u == root)
+    {
+        root = v;
+    }
+    else if (u == u->p->l)
+    {
+        u->p->l = v;
+    }
+    else
+    {
+        u->p->r = v;
+    }
+
+    v->p = u->p;
+}
 int main()
 {
     char str[15];
@@ -247,6 +435,13 @@ int main()
                     printf("exist\n");
                 else
                     printf("Not exist\n");
+            }
+            else if (*str == 'd')
+            {
+                scanf("%d", &x);
+                tmp = find(root, x);
+                if (tmp)
+                    red_black_delete(tmp);
             }
         }
     }

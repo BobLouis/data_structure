@@ -56,3 +56,5 @@ void BST::DeleteBST(int KEY)
     delete y; // 將y的記憶體位置釋放
     y = 0;
 }
+
+//http://alrightchiu.github.io/SecondRound/binary-search-tree-sortpai-xu-deleteshan-chu-zi-liao.html#delete

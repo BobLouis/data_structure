@@ -117,40 +117,40 @@ Node *minValueNode(Node *node)
 // Recursive function to delete a node with given key
 // from subtree with given root. It returns root of
 // the modified subtree.
-Node *deleteNode(Node *root, int key)
+Node *deleteNode(Node *node, int key)
 {
     // STEP 1: PERFORM STANDARD BST DELETE
 
-    if (root == NULL)
-        return root;
+    if (node == NULL)
+        return node;
 
     // If the key to be deleted is smaller than the
-    // root's key, then it lies in left subtree
-    if (key < root->val)
-        root->left = deleteNode(root->left, key);
+    // node's key, then it lies in left subtree
+    if (key < node->val)
+        node->left = deleteNode(node->left, key);
 
     // If the key to be deleted is greater than the
-    // root's key, then it lies in right subtree
-    else if (key > root->val)
-        root->right = deleteNode(root->right, key);
+    // node's key, then it lies in right subtree
+    else if (key > node->val)
+        node->right = deleteNode(node->right, key);
 
-    // if key is same as root's key, then This is
+    // if key is same as node's key, then This is
     // the node to be deleted
     else
     {
         // node with only one child or no child
-        if ((root->left == NULL) || (root->right == NULL))
+        if ((node->left == NULL) || (node->right == NULL))
         {
-            Node *temp = root->left ? root->left : root->right;
+            Node *temp = node->left ? node->left : node->right;
 
             // No child case
             if (temp == NULL)
             {
-                temp = root;
-                root = NULL;
+                temp = node;
+                node = NULL;
             }
             else               // One child case
-                *root = *temp; // Copy the contents of
+                *node = *temp; // Copy the contents of
                                // the non-empty child
             free(temp);
         }
@@ -158,62 +158,62 @@ Node *deleteNode(Node *root, int key)
         {
             // node with two children: Get the inorder
             // successor (smallest in the right subtree)
-            Node *temp = minValueNode(root->right);
+            Node *temp = minValueNode(node->right);
 
             // Copy the inorder successor's data to this node
-            root->val = temp->val;
+            node->val = temp->val;
 
             // Delete the inorder successor
-            root->right = deleteNode(root->right, temp->val);
+            node->right = deleteNode(node->right, temp->val);
         }
     }
 
     // If the tree had only one node then return
-    if (root == NULL)
-        return root;
+    if (node == NULL)
+        return node;
 
     // STEP 2: UPDATE HEIGHT OF THE CURRENT NODE
-    root->height = 1 + max(height(root->left),
-                           height(root->right));
+    node->height = 1 + max(height(node->left),
+                           height(node->right));
 
     // STEP 3: GET THE BALANCE FACTOR OF THIS NODE (to
     // check whether this node became unbalanced)
-    int balance = get_balance(root);
+    int balance = get_balance(node);
 
     // If this node becomes unbalanced, then there are 4 cases
 
     // Left Left Case
-    if (balance > 1 && get_balance(root->left) >= 0)
-        return right_R(root);
+    if (balance > 1 && get_balance(node->left) >= 0)
+        return right_R(node);
 
     // Left Right Case
-    if (balance > 1 && get_balance(root->left) < 0)
+    if (balance > 1 && get_balance(node->left) < 0)
     {
-        root->left = left_R(root->left);
-        return right_R(root);
+        node->left = left_R(node->left);
+        return right_R(node);
     }
 
     // Right Right Case
-    if (balance < -1 && get_balance(root->right) <= 0)
-        return left_R(root);
+    if (balance < -1 && get_balance(node->right) <= 0)
+        return left_R(node);
 
     // Right Left Case
-    if (balance < -1 && get_balance(root->right) > 0)
+    if (balance < -1 && get_balance(node->right) > 0)
     {
-        root->right = right_R(root->right);
-        return left_R(root);
+        node->right = right_R(node->right);
+        return left_R(node);
     }
 
-    return root;
+    return node;
 }
 
-void preOrder(Node *root)
+void preOrder(Node *node)
 {
-    if (root != NULL)
+    if (node != NULL)
     {
-        printf("%d %d ", root->val, root->height);
-        preOrder(root->left);
-        preOrder(root->right);
+        printf("%d %d ", node->val, node->height);
+        preOrder(node->left);
+        preOrder(node->right);
     }
 }
 
