@@ -2,7 +2,7 @@
 #include <cstdio>
 using namespace std;
 
-int arr[100000];
+int arr[10000000];
 int top = 1;
 // A BTree node
 class BTreeNode
@@ -695,6 +695,11 @@ int main()
             scanf("%d", &x);
             if (*(str + 3) == 'k')
             {
+                if (!x)
+                {
+                    printf("getk(0) = not found\n");
+                    continue;
+                }
                 top = 1;
                 t.traverse_a();
                 if (x >= top)
@@ -721,6 +726,11 @@ int main()
             scanf("%d", &x);
             if (*(str + 6) == 'k')
             {
+                if (!x)
+                {
+                    printf("removek(0) = not found\n");
+                    continue;
+                }
                 top = 1;
                 t.traverse_a();
                 if (x >= top)
@@ -743,7 +753,7 @@ int main()
                     printf("remove(%d) = %d\n", x, x);
                 }
                 else
-                    printf("removek(%d) = not found\n", x);
+                    printf("remove(%d) = not found\n", x);
             }
         }
         // t.traverse();
