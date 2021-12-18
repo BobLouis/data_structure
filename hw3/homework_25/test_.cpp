@@ -676,7 +676,7 @@ void BTree::del_node(int k)
 int main()
 {
     BTree t(3); // A B-Tree with minimum degree 3
-    /*
+
     int n, x, r;
     char str[15];
     BTreeNode *tmp;
@@ -695,11 +695,17 @@ int main()
             scanf("%d", &x);
             if (*(str + 3) == 'k')
             {
-                r = t.traverse_n(x);
-                if (~r)
-                    printf("getk(%d) = %d\n", x, r);
-                else
+                top = 1;
+                t.traverse_a();
+                if (x >= top)
+                {
                     printf("getk(%d) = not found\n", x);
+                }
+                else
+                {
+                    r = arr[x];
+                    printf("getk(%d) = %d\n", x, r);
+                }
             }
             else
             {
@@ -715,15 +721,18 @@ int main()
             scanf("%d", &x);
             if (*(str + 6) == 'k')
             {
-                r = t.traverse_n(x);
-                tmp = t.search(x);
-                if (tmp)
+                top = 1;
+                t.traverse_a();
+                if (x >= top)
                 {
+                    printf("removek(%d) = not found\n", x);
+                }
+                else
+                {
+                    r = arr[x];
                     t.del_node(r);
                     printf("removek(%d) = %d\n", x, r);
                 }
-                else
-                    printf("removek(%d) = not found\n", x);
             }
             else
             {
@@ -737,10 +746,10 @@ int main()
                     printf("removek(%d) = not found\n", x);
             }
         }
-        t.traverse();
-        printf("\n");
+        // t.traverse();
+        // printf("\n");
     }
-    */
+    /*
     t.insert(1);
     t.insert(3);
     t.insert(7);
@@ -783,7 +792,7 @@ int main()
     cout << endl;
     cout << arr[1] << endl;
     cout << arr[2] << endl;
-    cout << arr[3] << endl;
+    cout << arr[20] << endl;
     // cout << "Traversal of tree after removing 6\n";
     // t.traverse();
     // cout << endl;
@@ -812,6 +821,6 @@ int main()
     // cout << "Traversal of tree after removing 16\n";
     // t.traverse();
     // cout << endl;
-
+    */
     return 0;
 }
