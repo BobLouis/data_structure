@@ -1,6 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
-
+#include <time.h>
 typedef struct Node
 {
     int val, npl; //null path length
@@ -58,14 +58,14 @@ Node *insert(Node *root, int x)
 
 Node *pop_min(Node *root)
 {
-    printf("%d ", root->val);
+    // printf("%d ", root->val);
     root = merge(root->right, root->left);
     return root;
 }
 
 int main()
 {
-    int arr[] = {5, 3, 1, 9, 10, 8, 1, 7};
+    clock_t start_t, end_t;
     Node *root = NULL;
     int n, m, val, x;
     scanf("%d", &n);
@@ -74,14 +74,19 @@ int main()
         scanf("%d", &val);
         root = insert(root, val);
     }
+    start_t = clock();
     scanf("%d", &m);
     for (int i = 0; i < m; ++i)
     {
+        scanf("%d", &x);
         if (x)
             root = insert(root, x);
         else
             root = pop_min(root);
     }
+    end_t = clock();
+    printf("start: %lu end: %lu\n", start_t, end_t);
+    printf("duration: %lu", end_t - start_t);
 
     return 0;
 }

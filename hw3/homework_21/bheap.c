@@ -1,6 +1,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <time.h>
+
 #define MAX_N 100000
 
 typedef struct Node
@@ -171,16 +173,38 @@ int pop_min()
 int main()
 {
     init();
-    for (int i = 0; i < 5000; ++i)
+    clock_t start_t, end_t;
+    int n, m, val, x;
+    scanf("%d", &n);
+    for (int i = 0; i < n; ++i)
     {
-        insert_node(i);
+        scanf("%d", &x);
+        insert_node(x);
     }
+    start_t = clock();
+    scanf("%d", &m);
+    for (int i = 0; i < m; ++i)
+    {
+        scanf("%d", &x);
+        if (x)
+            insert_node(x);
+        else
+            pop_min();
+    }
+    end_t = clock();
+    printf("start: %lu end: %lu\n", start_t, end_t);
+    printf("duration: %lu", end_t - start_t);
 
-    print();
-    for (int i = 0; i < 4990; ++i)
-    {
-        printf("%d\n", pop_min());
-    }
-    print();
     return 0;
+    // for (int i = 0; i < 5000; ++i)
+    // {
+    //     insert_node(i);
+    // }
+
+    // print();
+    // for (int i = 0; i < 4990; ++i)
+    // {
+    //     printf("%d\n", pop_min());
+    // }
+    // print();
 }
