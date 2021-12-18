@@ -1,0 +1,8 @@
+10
+add 33
+add 33
+add 33
+remove 33
+range-search 10 40
+range-search 60 90
+range-search 0 100
