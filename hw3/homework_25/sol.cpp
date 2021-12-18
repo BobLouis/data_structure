@@ -19,7 +19,6 @@ public:
     // A function to traverse all nodes in a subtree rooted with this node
     void traverse();
 
-    int traverse_n(int x);
     void traverse_a();
     // A function to search a key in subtree rooted with this node.
     BTreeNode *search(int k); // returns NULL if k is not present.
@@ -100,13 +99,6 @@ public:
     {
         if (root != NULL)
             root->traverse_a();
-    }
-
-    int traverse_n(int x)
-    {
-        if (root != NULL)
-            return root->traverse_n(x);
-        return 0;
     }
 
     // function to search a key in this tree
@@ -589,40 +581,6 @@ void BTreeNode::traverse_a()
     // Print the subtree rooted with last child
     if (leaf == 0)
         C[i]->traverse_a();
-}
-
-int BTreeNode::traverse_n(int x)
-{
-    // There are n keys and n+1 children, traverse through n keys
-    // and first n children
-    int i;
-    static int ans = 0;
-    static int count = 0;
-    if (count <= x)
-    {
-        for (i = 0; i < n; i++)
-        {
-            // If this is not leaf, then before printing key[i],
-            // traverse the subtree rooted with child C[i].
-            if (leaf == 0)
-                if (C[i]->traverse_n(x))
-                    return ans;
-            // cout << " " << keys[i];
-            count++;
-            if (count == x)
-            {
-                // printf("%d\n", keys[i]);
-                ans = keys[i];
-                return keys[i];
-            }
-        }
-
-        // Print the subtree rooted with last child
-        if (leaf == 0)
-            if (C[i]->traverse_n(x))
-                return ans;
-    }
-    return 0;
 }
 
 // Function to search key k in subtree rooted with this node
