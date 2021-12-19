@@ -3,7 +3,7 @@
 #include <time.h>
 int main()
 {
-    int n = 5000;
+    int n = 10000000;
     int m = 5000;
     srand(time(NULL));
     printf("%d\n", n);

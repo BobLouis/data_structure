@@ -61,7 +61,6 @@ int main()
     root->parent = neel;
     char s[10];
     scanf("%s", s);
-    start_t = clock();
     if (!strcmp(s, "AVL"))
     {
         AVL root = NULL;
@@ -93,6 +92,8 @@ int main()
                 scanf("%d", &data);
                 findKey(root, data);
             }
+            else if (!strcmp(cmd, "m"))
+                start_t = clock();
             else if (!strcmp(cmd, "quit"))
                 break;
         }
@@ -140,6 +141,8 @@ int main()
                 else
                     printf("Not exist\n");
             }
+            else if (!strcmp(cmd, "m"))
+                start_t = clock();
             else if (!strcmp(cmd, "quit"))
                 break;
         }
