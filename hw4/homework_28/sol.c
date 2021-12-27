@@ -1,0 +1,114 @@
+#include <stdlib.h>
+#include <string.h>
+#include <stdio.h>
+
+#define DIV 17
+
+int arr[DIV];
+
+int insert(int x)
+{
+    int key = x % DIV;
+    int ptr = key;
+    if (arr[key] == -1)
+    {
+        arr[key] = x;
+        return 1;
+    }
+    else
+    {
+        ptr++;
+        while (ptr != key)
+        {
+            if (ptr == DIV)
+                ptr = 0;
+            if (arr[ptr] == -1)
+            {
+                arr[ptr] = x;
+                return 1;
+            }
+            ptr++;
+        }
+    }
+    return -1; //array full
+}
+
+int search(int x)
+{
+    int key = x % DIV;
+    int ptr = key;
+    if (arr[key] == x)
+        return key;
+    else
+    {
+        ptr++;
+        while (ptr != key)
+        {
+            if (ptr == DIV)
+                ptr = 0;
+            if (arr[ptr] == x)
+                return ptr;
+            ptr++;
+        }
+    }
+    return -1;
+}
+
+int dis(int ptr, int des)
+{
+    if (ptr > des)
+        return ptr - des;
+    else
+        return DIV - des + ptr;
+}
+
+int delete (int x)
+{
+    int key = search(x);
+    if (key == -1)
+        return -1; //key not found
+    int ptr = key;
+    int ety, des;
+    arr[ptr] = -1;
+    ety = ptr;
+    ptr++;
+    while (ptr != key)
+    {
+        if (ptr == DIV)
+            ptr = 0;
+        des = arr[ptr] % DIV;
+        if (arr[ptr] != -1 && des != ptr && dis(ptr, des) > dis(ety, des))
+        {
+            arr[ety] = arr[ptr];
+            arr[ptr] = -1;
+            ety = ptr;
+            ptr = ety + 1;
+        }
+        else
+            ptr++;
+    }
+    return 1;
+}
+
+void print()
+{
+    for (int i = 0; i < DIV; ++i)
+    {
+        printf("%d ", arr[i]);
+    }
+    printf("\n");
+}
+
+int main()
+{
+
+    int input[] = {6, 12, 34, 29, 28, 11, 23, 7, 0, 33, 30, 45};
+    memset(arr, -1, DIV * sizeof(int));
+    print();
+    for (int i = 0; i < sizeof(input) / sizeof(int); i++)
+    {
+        insert(input[i]);
+        print();
+    }
+    return 0;
+}
