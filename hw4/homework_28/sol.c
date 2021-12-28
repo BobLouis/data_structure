@@ -10,7 +10,7 @@ int insert(int x)
 {
     int key = x % DIV;
     int ptr = key;
-    if (arr[key] == -1)
+    if (!~arr[key])
     {
         arr[key] = x;
         return 1;
@@ -58,8 +58,17 @@ int dis(int ptr, int des)
 {
     if (ptr > des)
         return ptr - des;
+    else if (ptr == des)
+        return 0;
     else
         return DIV - des + ptr;
+}
+
+void print()
+{
+    for (int i = 0; i < DIV; ++i)
+        printf("%d ", arr[i]);
+    printf("\n");
 }
 
 int delete (int x)
@@ -74,8 +83,9 @@ int delete (int x)
     ptr++;
     while (ptr != key)
     {
-        if (ptr == DIV)
-            ptr = 0;
+        // printf("%d %d\n", key, ptr);
+        // print();
+
         des = arr[ptr] % DIV;
         if (arr[ptr] != -1 && des != ptr && dis(ptr, des) > dis(ety, des))
         {
@@ -86,17 +96,10 @@ int delete (int x)
         }
         else
             ptr++;
+        if (ptr == DIV)
+            ptr = 0;
     }
     return 1;
-}
-
-void print()
-{
-    for (int i = 0; i < DIV; ++i)
-    {
-        printf("%d ", arr[i]);
-    }
-    printf("\n");
 }
 
 int main()
@@ -110,5 +113,13 @@ int main()
         insert(input[i]);
         print();
     }
+    for (int i = 0; i < sizeof(input) / sizeof(int); i++)
+    {
+        printf("%d ", search(input[i]));
+    }
+    printf("\n");
+    print();
+    delete (29);
+    print();
     return 0;
 }
