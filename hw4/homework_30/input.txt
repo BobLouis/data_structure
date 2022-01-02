@@ -1,0 +1,7 @@
+5
+insert 10101 1
+insert 10101 1
+isnert 10100 3
+search 10101
+search 10100
+quit
