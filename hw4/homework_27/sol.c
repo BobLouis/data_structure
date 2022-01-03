@@ -1,67 +1,140 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <time.h>
 #define maxN 1000000
-#define swap(x, y) ((x) ^= (y) ^= (x) ^= (y))
+// #define swap(x, y) ((x) ^= (y) ^= (x) ^= (y))
 //insertion
 void InsertSort(int *arr, int len)
 {
-    int tmp, j, flag;
-    for (int i = 1; i < len; i++)
+    int tmp;
+    for (int i = 2; i <= len; i++)
     {
         tmp = arr[i];
-        for (j = i - 1; j >= 0; j--)
+        for (int j = i - 1; j >= 0; j--)
             if (tmp < arr[j])
-                arr[j + 1] = arr[j], flag = 1;
+                arr[j + 1] = arr[j];
             else
+            {
+                arr[j + 1] = tmp;
                 break;
-        if (flag)
-            arr[j + 1] = tmp, flag = 0;
+            }
     }
+}
+void swap(int *a, int *b)
+{
+    int t = *a;
+    *a = *b;
+    *b = t;
 }
 //quicksort
-int median(int a, int b, int c)
+void median(int *a, int *b, int *c)
 {
-    if ((a <= b) && (b <= c))
-        return b; // a b c
-    if ((a <= c) && (c <= b))
-        return c; // a c b
-    if ((b <= a) && (a <= c))
-        return a; // b a c
-    if ((b <= c) && (c <= a))
-        return c; // b c a
-    if ((c <= a) && (a <= b))
-        return a; // c a b
-    return b;     // c b a
+    if ((*a <= *b) && (*b <= *c) || (*c <= *b) && (*b <= *a)) //a b c  c b a
+        swap(b, c);
+    else if ((*b <= *a) && (*a <= *c) || (*c <= *a) && (*a <= *b)) //b a c  c a b
+        swap(a, c);
 }
 
-int split(int a[], int low, int high)
+int part_med(int arr[], int L, int R)
 {
-    int mid = (low + high) >> 1;
-    int pivot = a[median(low, mid, high)];
-    while (1)
-    {
-        while (low < high && pivot <= a[high])
-            high--;
-        if (low >= high)
-            break;
-        a[low++] = a[high];
-        while (low < high && a[low] <= pivot)
-            low++;
-        if (low >= high)
-            break;
-        a[high--] = a[low];
-    }
-    a[high] = pivot;
-    return high;
+    median(&arr[L], &arr[(R + L) >> 1], &arr[R]);
+    int pivot = arr[R];
+    int i = (L - 1);
+    for (int j = L; j <= R - 1; j++)
+        if (arr[j] < pivot)
+            i++, swap(&arr[i], &arr[j]);
+    swap(&arr[i + 1], &arr[R]);
+    return (i + 1);
 }
-void QuickSort(int a[], int low, int high)
+
+void quickSort_med(int arr[], int L, int R)
 {
-    int index;
-    if (low < high)
+    if (L < R)
     {
-        index = split(a, low, high);
-        QuickSort(a, low, index - 1);
-        QuickSort(a, index + 1, high);
+        int pi = part_med(arr, L, R);
+        quickSort_med(arr, L, pi - 1);
+        quickSort_med(arr, pi + 1, R);
+    }
+}
+
+int part(int arr[], int L, int R)
+{
+    // median(&arr[L], &arr[(R + L) >> 1], &arr[R]);
+    int pivot = arr[R];
+    int i = (L - 1);
+    for (int j = L; j <= R - 1; j++)
+        if (arr[j] < pivot)
+            i++, swap(&arr[i], &arr[j]);
+    swap(&arr[i + 1], &arr[R]);
+    return (i + 1);
+}
+
+void quickSort(int arr[], int L, int R)
+{
+    if (L < R)
+    {
+        int pi = part(arr, L, R);
+        quickSort(arr, L, pi - 1);
+        quickSort(arr, pi + 1, R);
+    }
+}
+
+//iterative merge
+int min(int x, int y) { return (x < y) ? x : y; }
+void merge(int arr[], int l, int m, int r)
+{
+    int i, j, k;
+    int n1 = m - l + 1;
+    int n2 = r - m;
+    int L[n1], R[n2];
+    for (i = 0; i < n1; i++)
+        L[i] = arr[l + i];
+    for (j = 0; j < n2; j++)
+        R[j] = arr[m + 1 + j];
+    i = 0;
+    j = 0;
+    k = l;
+    while (i < n1 && j < n2)
+    {
+        if (L[i] <= R[j])
+        {
+            arr[k] = L[i];
+            i++;
+        }
+        else
+        {
+            arr[k] = R[j];
+            j++;
+        }
+        k++;
+    }
+    while (i < n1)
+    {
+        arr[k] = L[i];
+        i++;
+        k++;
+    }
+
+    /* Copy the remaining elements of R[], if there are any */
+    while (j < n2)
+    {
+        arr[k] = R[j];
+        j++;
+        k++;
+    }
+}
+void mergeSort_iter(int arr[], int n)
+{
+    int curr_size;
+    int left_start;
+    for (curr_size = 1; curr_size <= n; curr_size = 2 * curr_size)
+    {
+        for (left_start = 0; left_start < n; left_start += 2 * curr_size)
+        {
+            int mid = min(left_start + curr_size - 1, n);
+            int right_end = min(left_start + 2 * curr_size - 1, n);
+            merge(arr, left_start, mid, right_end);
+        }
     }
 }
 
@@ -95,7 +168,7 @@ void Heapfy(int *arr, int idx, int len)
             if (idx + 1 <= len && arr[idx + 1] > arr[idx])
                 idx += 1;
             if (arr[idx >> 1] < arr[idx])
-                swap(arr[idx], arr[idx >> 1]);
+                swap(&arr[idx], &arr[idx >> 1]);
             else
                 break;
         }
@@ -107,11 +180,16 @@ void HeapSort(int *arr, int len)
     for (int i = len >> 1; i >= 1; i--)
         Heapfy(arr, i, len);
     for (int i = len; i > 1; i--)
-        swap(arr[1], arr[i]), Heapfy(arr, 1, i - 1);
+        swap(&arr[1], &arr[i]), Heapfy(arr, 1, i - 1);
 }
 
 int t, idx = 1, arr[maxN];
-
+void print(int *arr, int x)
+{
+    for (int i = 0; i < x + 1; ++i)
+        printf("%d\n", arr[i]);
+    printf("\n");
+}
 int main()
 {
     // scanf("%d", &t);
@@ -130,10 +208,70 @@ int main()
     //     printf("%d ", arr[i]);
     // puts("");
 
-    int arr[] = {2, 1, 0, 5, 7, 2, 9, 3};
-    // InsertSort(arr, 3);
-    QuickSort(arr, 0, 7);
-    for (int i = 0; i < 8; ++i)
-        printf("%d ", arr[i]);
+    int arr[maxN], ori[maxN];
+    int idx = 0;
+    clock_t start_t, end_t;
+    while (~scanf("%d", arr + idx))
+        idx++;
+    idx--;
+
+    for (int i = 0; i <= idx; ++i)
+        ori[i] = arr[i];
+    printf("\n%d\n", idx + 1);
+    for (int t = 0; t < 6; ++t)
+    {
+        start_t = clock();
+        switch (t)
+        {
+        case 0:
+            InsertSort(arr, idx);
+            // print(arr, idx);
+            printf("\ninsertion sort\n");
+            break;
+        case 1:
+            quickSort(arr, 1, idx);
+            // print(arr, idx);
+            printf("\nquicksort\n");
+            break;
+        case 2:
+            quickSort_med(arr, 1, idx);
+            // print(arr, idx);
+            printf("\nquickSort three med\n");
+            break;
+        case 3:
+            MergeSort(arr, 1, idx);
+            // print(arr, idx);
+            printf("\nmerge sort recursive\n");
+            break;
+        case 4:
+            mergeSort_iter(arr, idx);
+            // print(arr, idx);
+            printf("\nmerge sort iterative\n");
+            break;
+        case 5:
+            HeapSort(arr, idx);
+            // print(arr, idx);
+            printf("\nHeap sort\n");
+            break;
+        }
+
+        end_t = clock();
+        printf("duration: %lu\n", end_t - start_t);
+        for (int i = 0; i <= idx; ++i)
+            arr[i] = ori[i];
+    }
+
+    // InsertSort(arr, 9);
+    // print(arr, 10);
+    // quickSort(arr, 1, 9);
+    // print(arr, 10);
+    // quickSort_med(arr, 1, 9);
+    // print(arr, 10);
+    // MergeSort(arr, 1, 9);
+    // print(arr, 10);
+    // HeapSort(arr, 9);
+    // print(arr, 10);
+    // mergeSort_iter(arr, 9);
+    // print(arr, 10);
     return 0;
 }
