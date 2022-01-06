@@ -1,0 +1,220 @@
+
+501
+
+insertion sort
+duration: 403
+
+quicksort
+duration: 574
+
+quickSort three med
+duration: 33
+
+merge sort recursive
+duration: 178
+
+merge sort iterative
+duration: 49
+
+Heap sort
+duration: 71
+
+1001
+
+insertion sort
+duration: 1141
+
+quicksort
+duration: 1807
+
+quickSort three med
+duration: 106
+
+merge sort recursive
+duration: 282
+
+merge sort iterative
+duration: 63
+
+Heap sort
+duration: 95
+
+2001
+
+insertion sort
+duration: 4764
+
+quicksort
+duration: 6874
+
+quickSort three med
+duration: 152
+
+merge sort recursive
+duration: 375
+
+merge sort iterative
+duration: 137
+
+Heap sort
+duration: 210
+
+3001
+
+insertion sort
+duration: 10381
+
+quicksort
+duration: 16751
+
+quickSort three med
+duration: 241
+
+merge sort recursive
+duration: 547
+
+merge sort iterative
+duration: 232
+
+Heap sort
+duration: 337
+
+4001
+
+insertion sort
+duration: 19364
+
+quicksort
+duration: 26253
+
+quickSort three med
+duration: 317
+
+merge sort recursive
+duration: 699
+
+merge sort iterative
+duration: 280
+
+Heap sort
+duration: 415
+
+5001
+
+insertion sort
+duration: 28606
+
+quicksort
+duration: 44950
+
+quickSort three med
+duration: 460
+
+merge sort recursive
+duration: 953
+
+merge sort iterative
+duration: 489
+
+Heap sort
+duration: 668
+
+6001
+
+insertion sort
+duration: 40920
+
+quicksort
+duration: 63059
+
+quickSort three med
+duration: 545
+
+merge sort recursive
+duration: 1096
+
+merge sort iterative
+duration: 729
+
+Heap sort
+duration: 651
+
+7001
+
+insertion sort
+duration: 55597
+
+quicksort
+duration: 83814
+
+quickSort three med
+duration: 604
+
+merge sort recursive
+duration: 1313
+
+merge sort iterative
+duration: 772
+
+Heap sort
+duration: 895
+
+8001
+
+insertion sort
+duration: 70881
+
+quicksort
+duration: 110162
+
+quickSort three med
+duration: 700
+
+merge sort recursive
+duration: 2054
+
+merge sort iterative
+duration: 597
+
+Heap sort
+duration: 862
+
+9001
+
+insertion sort
+duration: 93837
+
+quicksort
+duration: 136002
+
+quickSort three med
+duration: 811
+
+merge sort recursive
+duration: 1631
+
+merge sort iterative
+duration: 818
+
+Heap sort
+duration: 992
+
+10001
+
+insertion sort
+duration: 117289
+
+quicksort
+duration: 176509
+
+quickSort three med
+duration: 1003
+
+merge sort recursive
+duration: 1888
+
+merge sort iterative
+duration: 1134
+
+Heap sort
+duration: 1224

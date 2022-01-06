@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
-#define maxN 1000000
+#define maxN 11000
 // #define swap(x, y) ((x) ^= (y) ^= (x) ^= (y))
 //insertion
 void InsertSort(int *arr, int len)
