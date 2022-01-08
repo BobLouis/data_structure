@@ -1,7 +1,6 @@
 #include <stdlib.h>
 #include <string.h>
 #include <stdio.h>
-
 #define DIV 17
 
 int arr[DIV];
@@ -83,9 +82,6 @@ int delete (int x)
     ptr++;
     while (ptr != key)
     {
-        // printf("%d %d\n", key, ptr);
-        // print();
-
         des = arr[ptr] % DIV;
         if (arr[ptr] != -1 && des != ptr && dis(ptr, des) > dis(ety, des))
         {

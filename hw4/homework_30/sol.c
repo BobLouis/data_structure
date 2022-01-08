@@ -1,142 +1,147 @@
-#include <stdlib.h>
 #include <stdio.h>
-#include <stdbool.h>
+#include <stdlib.h>
+#include <string.h>
+#define maxN 1007
+#define SIZE 2
+#define GET_CHILD(i) p->next[key[i] - '0']
 
-typedef struct Node
+typedef struct node
 {
-    int bit;
-    bool *data;
-    int val;
-    struct Node *l, *r;
+    int cnt, val;
+    char str[maxN];
+    struct node *next[SIZE];
 } Node;
 
-Node *root = NULL;
-int Bit = 0;
-Node *newNode(bool *x, int b, int value)
-{
-    Node *tmp = (Node *)malloc(sizeof(Node));
-    tmp->data = (bool *)malloc(sizeof(bool) * Bit);
-    for (int i = 0; i < Bit; ++i)
-        tmp->data[i] = x[i];
-    tmp->bit = b;
-    tmp->val = value;
-    return tmp;
-}
-
-bool bit(bool *x, int b)
-{
-    return x[b - 1];
-}
-
-Node *search(bool *k)
-{
-    Node *cur, *next;
-    if (!root)
-        return NULL; //empty
-    next = root->l;
-    cur = root;
-    while (next->bit > cur->bit)
-    {
-        cur = next;
-        next = (bit(k, next->bit)) ? next->r : next->l;
-    }
-    return next;
-}
-
-bool isEq(bool *a, bool *b)
-{
-    for (int i = 0; i < Bit; ++i)
-    {
-        if (a[i] != b[i])
-            return 0;
-    }
-    return 1;
-}
-
-void insert(bool *x, int val)
-{
-    Node *cur, *par, *last, *new;
-    int i;
-    if (!root)
-    {
-        root = newNode(x, 0, val);
-        root->l = root;
-        printf("insert -> %d\n", val);
-        return;
-    }
-    last = search(x);
-    if (isEq(x, last->data))
-    {
-        printf("insert -> conflict\n");
-        return;
-    }
-
-    for (i = 1; bit(x, i) == bit(last->data, i); ++i)
-        ;
-    cur = root->l;
-    par = root;
-    while (cur->bit > par->bit && cur->bit < i)
-    {
-        par = cur;
-        cur = (bit(x, cur->bit)) ? cur->r : cur->l;
-    }
-    new = newNode(x, i, val);
-    new->l = (bit(x, i)) ? cur : new;
-    new->r = (bit(x, i)) ? new : cur;
-
-    if (cur == par->l)
-        par->l = new;
-    else
-        par->r = new;
-    printf("insert -> %d\n", val);
-}
-
-void printData(bool *x)
-{
-    for (int i = 0; i < Bit; i++)
-        printf("%d ", x[i]);
-}
+Node *init();
+int search(Node *root, char *key);
+void insert(Node *root, char *key, int val);
+int delete (Node *root, char *key);
 
 int main()
 {
-    // scanf("%d", &Bit);
-    // Bit = 5;
-    // bool d[] = {0, 1, 0, 1, 0};
-    // Node *tmp = newNode(d, 5);
-    // printData(tmp->data);
-    scanf("%d", &Bit);
-    bool *arr = (bool *)malloc(sizeof(bool) * Bit);
-    char str[10] = {0};
-    int val, btmp;
-    Node *tmp;
-    while (*str != 'q')
+    int n, tmp;
+    char key[maxN];
+    Node *root = init();
+    scanf("%d", &n);
+    while (~scanf("%s", key))
     {
-        scanf("%s", str);
-        if (*str == 'i')
+        if (!strcmp(key, "insert"))
         {
-            for (int i = 0; i < Bit; ++i)
-            {
-                scanf("%1d", &btmp);
-                arr[i] = btmp;
-            }
-
-            scanf("%d", &val);
-            insert(arr, val);
-        }
-        else if (*str == 's')
-        {
-            for (int i = 0; i < Bit; ++i)
-            {
-                scanf("%1d", &btmp);
-                arr[i] = btmp;
-            }
-            tmp = search(arr);
-            if (isEq(tmp->data, arr))
-                printf("search -> %d\n", tmp->val);
+            scanf("%s%d", key, &n);
+            if (search(root, key))
+                puts("insert -> conflict");
             else
-                printf("search -> not found");
+                insert(root, key, n), printf("insert -> %d\n", n);
+        }
+        else if (!strcmp(key, "search"))
+        {
+            scanf("%s", key), tmp = search(root, key);
+            if (tmp)
+                printf("search -> %d\n", tmp);
+            else
+                puts("search -> not found");
+        }
+        else if (!strcmp(key, "delete"))
+        {
+            scanf("%s", key), tmp = delete (root, key);
+            if (tmp)
+                printf("delete -> %d\n", tmp);
+            else
+                puts("delete -> not found");
         }
     }
+}
 
+Node *init()
+{
+    Node *tmp = (Node *)malloc(sizeof(Node));
+    tmp->cnt = 1;
+    memset(tmp->str, 0, sizeof(tmp->str));
+    memset(tmp->next, 0, sizeof(tmp->next));
+    return tmp;
+}
+
+int search(Node *root, char *key)
+{
+    int i = 0, x, y;
+    Node *p = root;
+    while (key[i])
+    {
+        if (GET_CHILD(i))
+        {
+            x = 0, y = i;
+            while (key[y] && GET_CHILD(i)->str[x] && key[y] == GET_CHILD(i)->str[x])
+                x++, y++;
+            if (!key[y] && GET_CHILD(i)->cnt)
+                return GET_CHILD(i)->val;
+            else if (GET_CHILD(i)->str[x])
+                return 0;
+        }
+        else
+            return 0;
+        p = GET_CHILD(i), i = y;
+    }
+    return 0;
+}
+
+void insert(Node *root, char *key, int val)
+{
+    int i = 0, x, y;
+    Node *p = root;
+    while (key[i])
+    {
+        if (GET_CHILD(i))
+        {
+            x = 0, y = i, GET_CHILD(i)->cnt++;
+            while (key[y] && GET_CHILD(i)->str[x] && key[y] == GET_CHILD(i)->str[x])
+                x++, y++;
+            if (GET_CHILD(i)->str[x])
+            {
+                Node *tmp = init();
+                memcpy(tmp->str, (GET_CHILD(i)->str) + x, strlen((GET_CHILD(i)->str + x)) + 1);
+                memcpy(tmp->next, GET_CHILD(i)->next, sizeof(GET_CHILD(i)->next));
+                memset(GET_CHILD(i)->next, 0, sizeof(GET_CHILD(i)->next));
+                tmp->cnt = GET_CHILD(i)->cnt - 1;
+                tmp->val = GET_CHILD(i)->val;
+                GET_CHILD(i)->next[GET_CHILD(i)->str[x] - '0'] = tmp;
+                GET_CHILD(i)->str[x] = 0;
+            }
+        }
+        else
+        {
+            GET_CHILD(i) = init();
+            GET_CHILD(i)->val = val;
+            memcpy(GET_CHILD(i)->str, key + i, strlen(key + i) + 1);
+            return;
+        }
+        p = GET_CHILD(i), i = y;
+    }
+}
+
+int delete (Node *root, char *key)
+{
+    int i = 0, x, y;
+    Node *p = root;
+    while (key[i])
+    {
+        if (GET_CHILD(i))
+        {
+            x = 0, y = i;
+            while (key[y] && GET_CHILD(i)->str[x] && key[y] == GET_CHILD(i)->str[x])
+                x++, y++;
+            if (!key[y])
+            {
+                GET_CHILD(i)->cnt--;
+                if (!GET_CHILD(i)->cnt)
+                    GET_CHILD(i)->str[0] = -1;
+                return GET_CHILD(i)->val;
+            }
+            else if (GET_CHILD(i)->str[x])
+                return 0;
+        }
+        else
+            return 0;
+        p = GET_CHILD(i), i = y;
+    }
     return 0;
 }
